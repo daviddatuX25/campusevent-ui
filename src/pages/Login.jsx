@@ -1,10 +1,18 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const { login, isLoggedIn } = useAuth();
+  const navigate = useNavigate();
+
+  if (isLoggedIn) {
+    navigate('/dashboard', { replace: true });
+    return null;
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -13,12 +21,14 @@ export default function Login() {
       return;
     }
     setError('');
-    alert('Login successful! (simulated)');
+    login();
+    navigate('/dashboard', { replace: true });
   };
 
   return (
     <div className="page login-page">
       <h1>Login</h1>
+      <p className="login-subtitle">Sign in to access the Dashboard</p>
       <form onSubmit={handleSubmit} className="login-form">
         {error && <p className="error">{error}</p>}
         <div className="form-group">
